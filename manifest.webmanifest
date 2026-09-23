@@ -1,0 +1,13 @@
+{
+  "name": "ペンタゴンワーク",
+  "short_name": "ペンタゴンワーク",
+  "description": "気がかりを5つの視点から見つめる、自分用のワークアプリ",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f7f4ef",
+  "theme_color": "#f7f4ef",
+  "lang": "ja",
+  "icons": [{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
+}
+
