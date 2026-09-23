@@ -22,6 +22,7 @@
       <div class="hero-card"><p class="eyebrow">ひとつずつ、考えをほどく</p><h2>気がかりを、5つの視点から見つめる。</h2><p>書いた内容はこのブラウザだけに保存されます。</p><button id="newWorkBtn" class="primary wide" type="button">新しいワークを始める</button></div>
       <div class="section-heading"><h2>過去の記録</h2><span id="recordCount"></span></div>
       <div id="recordList" class="record-list"></div>
+      <button id="graveyardBtn" class="secondary wide-section-button" type="button">悩みの墓場を見る</button>
       <div class="backup-actions"><button id="exportBtn" class="text-button" type="button">バックアップを書き出す</button><label class="text-button file-label">バックアップを読み込む<input id="importInput" type="file" accept="application/json" /></label></div>
     </section>
 
@@ -33,7 +34,8 @@
       </form>
     </section>
 
-    <section id="detailView" class="view hidden"><button id="detailBackBtn" class="back-link" type="button">← 一覧に戻る</button><div id="detailContent"></div><button id="deleteBtn" class="danger" type="button">この記録を削除</button></section>
+    <section id="detailView" class="view hidden"><button id="detailBackBtn" class="back-link" type="button">← 一覧に戻る</button><div id="detailContent"></div><div id="followUpPanel"></div><button id="deleteBtn" class="danger" type="button">この記録を削除</button></section>
+    <section id="graveyardView" class="view hidden"><button id="graveyardBackBtn" class="back-link" type="button">← 一覧に戻る</button><p class="eyebrow">PAST WORRIES</p><h2>悩みの墓場</h2><p class="graveyard-intro">これまで成仏した悩み：<strong id="graveyardCount">0</strong>件</p><div id="graveyardList" class="record-list"></div></section>
   </main>
   <div id="toast" class="toast" role="status"></div>
   <script src="app.js"></script>
