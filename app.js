@@ -1,7 +1,7 @@
 const STORAGE_KEY='pentagon-work-records-v1';
 const views={home:document.querySelector('#homeView'),editor:document.querySelector('#editorView'),detail:document.querySelector('#detailView')};
 const steps=[{key:'problem',title:'気がかり・問題',help:'いま心に引っかかっていることを、まとまっていなくても大丈夫なので書いてください。',placeholder:'例：最近、仕事と自分の時間のバランスが気になる',kicker:'STEP 1'},{key:'me',title:'私の視点',help:'自分自身は、この問題についてどう感じ、何を考えていますか？',placeholder:'思いつくままに書いてみる',kicker:'STEP 2 / 6'},{key:'friend',title:'親友の視点',help:'いちばん信頼できる親友なら、どんな言葉をかけてくれそうですか？',placeholder:'親友になったつもりで書いてみる',kicker:'STEP 3 / 6'},{key:'subject',title:'対象者・対象物の視点',help:'相手や状況そのものの立場から見ると、何が見えてきますか？',placeholder:'相手・対象の立場で書いてみる',kicker:'STEP 4 / 6'},{key:'god',title:'神さまの視点',help:'より大きな視点、時間を超えた視点から見ると、どんな意味がありますか？',placeholder:'少し距離を置いて書いてみる',kicker:'STEP 5 / 6'},{key:'respected',title:'尊敬する人の視点',help:'尊敬する人なら、この問題にどう向き合うでしょうか？',placeholder:'その人の視点で書いてみる',kicker:'STEP 6 / 10'},{key:'insight',title:'気づいたこと',help:'5つの視点を通して、あらためて気づいたことを書いてください。',placeholder:'気づき・発見・変化',kicker:'STEP 7 / 10'},{key:'future',title:'今後どうなればいいか',help:'この問題が、これからどんな状態になればよさそうですか？',placeholder:'理想の状態',kicker:'STEP 8 / 10'},{key:'avoid',title:'絶対に避けたいこと',help:'これだけは避けたい、ということはありますか？',placeholder:'避けたいこと',kicker:'STEP 9 / 10'},{key:'firstStep',title:'最初の小さな一歩',help:'今日または明日からできる、いちばん小さな一歩は何ですか？',placeholder:'無理なくできる一歩',kicker:'STEP 10 / 10'}];
-let current=0, draft={}, selectedId=null;
+let current=0, draft={}, selectedId=null, deferredInstallPrompt=null;
 const getRecords=()=>JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]'); const saveRecords=x=>localStorage.setItem(STORAGE_KEY,JSON.stringify(x));
 const fmt=d=>new Intl.DateTimeFormat('ja-JP',{dateStyle:'medium',timeStyle:'short'}).format(new Date(d));
 function show(name){Object.values(views).forEach(v=>v.classList.add('hidden'));views[name].classList.remove('hidden');window.scrollTo(0,0)}
@@ -17,4 +17,9 @@ document.querySelector('#privacyToggle').onclick=()=>{document.body.classList.to
 document.querySelector('#exportBtn').onclick=()=>{const blob=new Blob([JSON.stringify({version:1,exportedAt:new Date().toISOString(),records:getRecords()},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`pentagon-work-backup-${new Date().toISOString().slice(0,10)}.json`;a.click();URL.revokeObjectURL(a.href);toast('バックアップを書き出しました')};
 document.querySelector('#importInput').onchange=e=>{const f=e.target.files[0];if(!f)return;const reader=new FileReader();reader.onload=()=>{try{const data=JSON.parse(reader.result);if(!Array.isArray(data.records))throw Error();saveRecords([...data.records,...getRecords()].filter((r,i,a)=>a.findIndex(x=>x.id===r.id)===i));renderHome();toast('バックアップを読み込みました')}catch{toast('読み込めないファイルです')}};reader.readAsText(f)};
 renderHome();
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))}
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstallPrompt=e;document.querySelector('#installBanner').classList.remove('hidden')});
+document.querySelector('#installBtn').onclick=async()=>{if(!deferredInstallPrompt)return;deferredInstallPrompt.prompt();await deferredInstallPrompt.userChoice;deferredInstallPrompt=null;document.querySelector('#installBanner').classList.add('hidden')};
+document.querySelector('#dismissInstall').onclick=()=>document.querySelector('#installBanner').classList.add('hidden');
+window.addEventListener('appinstalled',()=>document.querySelector('#installBanner').classList.add('hidden'));
 
